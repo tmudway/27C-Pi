@@ -40,6 +40,13 @@ class Programmer:
         self.address_register = self.address_register[0:21]
 
     def read(self):
+
+        data = bitarray()
+
+        for pin in self.dataPins:
+            data.append(GPIO.input(pin))
+        print(util.ba2hex(data))
+
         GPIO.output(self.E, 0)
         GPIO.output(self.GVpp, 0)
         time.sleep(0.001)
@@ -49,7 +56,15 @@ class Programmer:
         for pin in self.dataPins:
             data.append(GPIO.input(pin))
         print(util.ba2hex(data))
+
+        GPIO.output(self.E, 1)
+        GPIO.output(self.GVpp, 1)
+
+        time.sleep(0.001)
         
+        for pin in self.dataPins:
+            data.append(GPIO.input(pin))
+        print(util.ba2hex(data))
 
 
 def main():
