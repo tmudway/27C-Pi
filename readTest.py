@@ -15,6 +15,8 @@ class shiftRegister:
         GPIO.setup(self.srlclck, GPIO.OUT)
         GPIO.setup(self.rclk, GPIO.OUT)
 
+        self.setup()
+
     def setup(self):
         GPIO.output(self.ser, 0)
         GPIO.output(self.srlclck, 0)
@@ -56,10 +58,10 @@ class Programmer:
     dataPins = [17, 22, 9, 5, 21, 16, 7, 19, 27, 10, 11, 6, 20, 12, 26, 13]
 
     shiftData = 18
-    shiftClock = 23
-    shiftLatch = 24
+    shiftClock = 24
+    shiftLatch = 23
 
-    addReg = shiftRegister(shiftData, shiftClock, shiftLatch)
+    
 
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
@@ -75,6 +77,7 @@ class Programmer:
         GPIO.output(self.GVpp, 1)
         GPIO.output(self.E, 1)
 
+        self.addReg = shiftRegister(self.shiftData, self.shiftClock, self.shiftLatch)
 
 
     def shift_address(self, data):
@@ -112,13 +115,13 @@ class Programmer:
 
     def setAddress(self):
         data = bitarray('1010')
-        self.addReg.inputAddress()
+        self.addReg.inputAddress(data)
 
         data = bitarray()
         
         for pin in self.dataPins:
             data.append(GPIO.input(pin))
-        print(util.ba2hex(data))
+        print(data)
 
 
 def main():
