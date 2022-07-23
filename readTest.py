@@ -1,11 +1,11 @@
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 import matplotlib.pyplot as plt
 import numpy as np
 
 class Programmer:
 
-    GVpp = 0
-    E = 1
+    GVpp = 25
+    E = 8
 
     shift_data = 2
     shift_clock = 3
@@ -19,6 +19,14 @@ class Programmer:
     A10Log = []
 
     GPIO.setmode(GPIO.BCM)
+
+    # Setup Pins
+    GPIO.setup(GVpp, GPIO.OUT)
+    GPIO.setup(E, GPIO.OUT)
+
+    # Setup Initial State
+    GPIO.output(GVpp, 1)
+    GPIO.output(E, 1)
 
     def log_margin(self, time):
         for i in range(time):
@@ -73,7 +81,8 @@ def main():
 
     prog.set_margin(1)
     prog.view_log_margin()
+    GPIO.cleanup()
 
 
 if __name__ == "__main__":
-    main() 
+    main()
