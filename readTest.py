@@ -2,12 +2,14 @@ import RPi.GPIO as GPIO
 import matplotlib.pyplot as plt
 import numpy as np
 import time
+from bitarray import bitarray
+from bitarray import util
 
 class Programmer:
 
     GVpp = 25
     E = 8
-    data = [17, 22, 9, 5, 21, 16, 7, 19, 27, 10, 11, 6, 20, 12, 26, 13]
+    dataPins = [17, 22, 9, 5, 21, 16, 7, 19, 27, 10, 11, 6, 20, 12, 26, 13]
 
     shift_data = 2
     shift_clock = 3
@@ -26,7 +28,7 @@ class Programmer:
     GPIO.setup(GVpp, GPIO.OUT)
     GPIO.setup(E, GPIO.OUT)
 
-    for pin in data:
+    for pin in dataPins:
         GPIO.setup(pin, GPIO.IN)
 
     # Setup Initial State
@@ -42,8 +44,12 @@ class Programmer:
         GPIO.output(self.GVpp, 0)
         time.sleep(0.001)
 
-        for pin in self.data:
-            print(GPIO.input(pin))
+        data = bitarray()
+
+        for pin in self.dataPins:
+            data.append(GPIO.input(pin))
+        print(util.ba2hex(data))
+        
 
 
 def main():
