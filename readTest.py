@@ -5,22 +5,61 @@ import time
 from bitarray import bitarray
 from bitarray import util
 
+class shiftRegister:
+    def __init__(self, data, serialClock, registerClock):
+        self.ser = data
+        self.srlclck = serialClock
+        self.rclk = registerClock
+
+        GPIO.setup(self.ser, GPIO.OUT)
+        GPIO.setup(self.srlclck, GPIO.OUT)
+        GPIO.setup(self.rclk, GPIO.OUT)
+
+    def setup(self):
+        GPIO.output(self.ser, 0)
+        GPIO.output(self.srlclck, 0)
+        GPIO.output(self.rclk, 0)
+
+        self.clear()
+
+    def clear(self):
+        GPIO.output(self.ser, 0)
+        for i in range(0, 24):
+            self.shift()
+        
+        self.latch()
+
+    def shift(self):
+        GPIO.output(self.srlclck, 0)
+        GPIO.output(self.srlclck, 1)
+        GPIO.output(self.srlclck, 0)
+
+    def latch(self):
+        GPIO.output(self.rclk, 0)
+        GPIO.output(self.rclk, 1)
+        GPIO.output(self.rclk, 0)
+
+    def inputBit(self, value):
+        GPIO.output(self.ser, value)
+        self.shift()
+
+    def inputAddress(self, bitArray):
+        for bit in bitArray:
+            self.inputBit(bit)
+        self.latch()
+
+
 class Programmer:
 
     GVpp = 25
     E = 8
     dataPins = [17, 22, 9, 5, 21, 16, 7, 19, 27, 10, 11, 6, 20, 12, 26, 13]
 
-    shift_data = 2
-    shift_clock = 3
-    shift_latch = 4
+    shiftData = 18
+    shiftClock = 23
+    shiftLatch = 24
 
-    address_register = []
-
-    GvppLog = []
-    ELog = []
-    A8Log = []
-    A10Log = []
+    addReg = shiftRegister(shiftData, shiftClock, shiftLatch)
 
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
@@ -35,6 +74,8 @@ class Programmer:
         # Setup Initial State
         GPIO.output(self.GVpp, 1)
         GPIO.output(self.E, 1)
+
+
 
     def shift_address(self, data):
         self.address_register = data + self.address_register
@@ -62,6 +103,16 @@ class Programmer:
         GPIO.output(self.GVpp, 1)
 
         time.sleep(0.001)
+
+        data = bitarray()
+        
+        for pin in self.dataPins:
+            data.append(GPIO.input(pin))
+        print(util.ba2hex(data))
+
+    def setAddress(self):
+        data = bitarray('1010')
+        self.addReg.inputAddress()
 
         data = bitarray()
         
