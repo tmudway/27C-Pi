@@ -22,18 +22,19 @@ class Programmer:
     A8Log = []
     A10Log = []
 
-    GPIO.setmode(GPIO.BCM)
+    def __init__(self):
+        GPIO.setmode(GPIO.BCM)
 
-    # Setup Pins
-    GPIO.setup(GVpp, GPIO.OUT)
-    GPIO.setup(E, GPIO.OUT)
+        # Setup Pins
+        GPIO.setup(self.GVpp, GPIO.OUT)
+        GPIO.setup(self.E, GPIO.OUT)
 
-    for pin in dataPins:
-        GPIO.setup(pin, GPIO.IN)
+        for pin in self.dataPins:
+            GPIO.setup(pin, GPIO.IN)
 
-    # Setup Initial State
-    GPIO.output(GVpp, 1)
-    GPIO.output(E, 1)
+        # Setup Initial State
+        GPIO.output(self.GVpp, 1)
+        GPIO.output(self.E, 1)
 
     def shift_address(self, data):
         self.address_register = data + self.address_register
@@ -61,6 +62,8 @@ class Programmer:
         GPIO.output(self.GVpp, 1)
 
         time.sleep(0.001)
+
+        data = bitarray()
         
         for pin in self.dataPins:
             data.append(GPIO.input(pin))
