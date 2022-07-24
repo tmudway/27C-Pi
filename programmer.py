@@ -1,11 +1,10 @@
-from cv2 import add
 import RPi.GPIO as GPIO
 import matplotlib.pyplot as plt
 import numpy as np
 import time
 from bitarray import bitarray
 from bitarray import util
-from .ShiftRegister import shiftRegister
+from ShiftRegister import shiftRegister
 
 class Programmer:
 
@@ -29,7 +28,7 @@ class Programmer:
             GPIO.setup(pin, GPIO.IN)
 
         # Setup Initial State
-        GPIO.output(self.GVpp, 1)
+        GPIO.output(self.GVpp, 0)
         GPIO.output(self.E, 1)
 
         self.addReg = shiftRegister(self.shiftData, self.shiftClock, self.shiftLatch)
@@ -46,12 +45,12 @@ class Programmer:
         self.setAddress(address)
 
         GPIO.output(self.E, 0)
-        GPIO.output(self.GVpp, 0)
+        GPIO.output(self.GVpp, 1)
         time.sleep(0.001)
         self.printOutput()
 
         GPIO.output(self.E, 1)
-        GPIO.output(self.GVpp, 1)
+        GPIO.output(self.GVpp, 0)
 
         time.sleep(0.001)
         self.printOutput()
@@ -63,10 +62,10 @@ class Programmer:
             self.addReg.inputAddress('10100000000')
 
         GPIO.output(self.E, 1)
-        GPIO.output(self.GVpp, 0)
+        GPIO.output(self.GVpp, 1)
         time.sleep(0.000005)
 
-        GPIO.output(self.GVpp, 1)
+        GPIO.output(self.GVpp, 0)
         time.sleep(0.000005)
 
         GPIO.output(self.E, 0)
@@ -93,7 +92,7 @@ class Programmer:
         self.setDataPinMode(0)
         self.setData(data)
         self.setAddress(address)
-        GPIO.output(self.GVpp, 1)
+        GPIO.output(self.GVpp, 0)
         GPIO.output(self.E, 1)
         time.sleep(0.000005)
 
@@ -102,7 +101,7 @@ class Programmer:
         GPIO.output(self.E, 1)
         time.sleep(0.000005)
 
-        GPIO.output(self.GVpp, 0)
+        GPIO.output(self.GVpp, 1)
         self.setDataPinMode(1)
         time.sleep(0.000005)
 
@@ -126,7 +125,6 @@ class Programmer:
         data = util.hex2ba(data)
         for i, bit in enumerate(data):
             GPIO.output(self.dataPins[i], int(bit))
-            print(bit)
 
     def setDataPinMode(self, mode):
         modeSet = GPIO.IN if mode == 1 else GPIO.OUT
@@ -137,7 +135,7 @@ class Programmer:
 def main():
     prog = Programmer()
 
-    prog.read(0)
+    prog.program(0, '0000')
     GPIO.cleanup()
 
 

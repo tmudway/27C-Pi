@@ -42,5 +42,5 @@ class shiftRegister:
 
     def inputAddress(self, bitArray):
         for bit in bitArray:
-            self.inputBit(bit)
+            self.inputBit(int(bit))
         self.latch()
