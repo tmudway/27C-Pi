@@ -55,13 +55,12 @@ class Programmer:
 
     GVpp = 25
     E = 8
-    dataPins = [17, 22, 9, 5, 21, 16, 7, 19, 27, 10, 11, 6, 20, 12, 26, 13]
+
+    dataPins = [17, 22, 9, 5, 13, 26, 12, 20, 27, 10, 11, 6, 19, 7, 16, 21]
 
     shiftData = 18
     shiftClock = 24
     shiftLatch = 23
-
-    
 
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
