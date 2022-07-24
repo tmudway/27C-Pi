@@ -28,7 +28,7 @@ class Programmer:
             GPIO.setup(pin, GPIO.IN)
 
         # Setup Initial State
-        GPIO.output(self.GVpp, 0)
+        GPIO.output(self.GVpp, 1)
         GPIO.output(self.E, 1)
 
         self.addReg = shiftRegister(self.shiftData, self.shiftClock, self.shiftLatch)
@@ -45,12 +45,12 @@ class Programmer:
         self.setAddress(address)
 
         GPIO.output(self.E, 0)
-        GPIO.output(self.GVpp, 1)
+        GPIO.output(self.GVpp, 0)
         time.sleep(0.001)
         self.printOutput()
 
         GPIO.output(self.E, 1)
-        GPIO.output(self.GVpp, 0)
+        GPIO.output(self.GVpp, 1)
 
         time.sleep(0.001)
         self.printOutput()
@@ -62,10 +62,10 @@ class Programmer:
             self.addReg.inputAddress('10100000000')
 
         GPIO.output(self.E, 1)
-        GPIO.output(self.GVpp, 1)
+        GPIO.output(self.GVpp, 0)
         time.sleep(0.000005)
 
-        GPIO.output(self.GVpp, 0)
+        GPIO.output(self.GVpp, 1)
         time.sleep(0.000005)
 
         GPIO.output(self.E, 0)
@@ -80,7 +80,7 @@ class Programmer:
         GPIO.output(self.E, 1)
         time.sleep(0.000005)
 
-        GPIO.output(self.GVpp, 0)
+        GPIO.output(self.GVpp, 1)
         time.sleep(0.000005)
 
         if set:
@@ -92,7 +92,7 @@ class Programmer:
         self.setDataPinMode(0)
         self.setData(data)
         self.setAddress(address)
-        GPIO.output(self.GVpp, 0)
+        GPIO.output(self.GVpp, 1)
         GPIO.output(self.E, 1)
         time.sleep(0.000005)
 
@@ -101,7 +101,7 @@ class Programmer:
         GPIO.output(self.E, 1)
         time.sleep(0.000005)
 
-        GPIO.output(self.GVpp, 1)
+        GPIO.output(self.GVpp, 0)
         self.setDataPinMode(1)
         time.sleep(0.000005)
 
